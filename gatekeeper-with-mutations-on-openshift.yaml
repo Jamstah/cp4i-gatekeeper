@@ -1119,14 +1119,6 @@ rules:
   - patch
   - update
   - watch
-- apiGroups:
-  - security.openshift.io
-  resourceNames:
-  - nonroot
-  resources:
-  - securitycontextconstraints
-  verbs:
-  - use
 ---
 apiVersion: rbac.authorization.k8s.io/v1
 kind: ClusterRole
@@ -1406,9 +1398,7 @@ spec:
             drop:
             - all
           readOnlyRootFilesystem: true
-          runAsGroup: 999
           runAsNonRoot: true
-          runAsUser: 1000
       nodeSelector:
         kubernetes.io/os: linux
       priorityClassName: system-cluster-critical
@@ -1460,7 +1450,6 @@ spec:
         - --operation=webhook
         - --enable-mutation=true
         - --log-mutations=true
-        - --loglevel=DEBUG
         command:
         - /manager
         env:
@@ -1507,9 +1496,7 @@ spec:
             drop:
             - all
           readOnlyRootFilesystem: true
-          runAsGroup: 999
           runAsNonRoot: true
-          runAsUser: 1000
         volumeMounts:
         - mountPath: /certs
           name: cert
