@@ -6,6 +6,7 @@ When Cloud Pak for Integration operators, they will manage the Deployment/Statef
 
 Some quick warnings:
 - Mutating resources created by operators will change the behaviour of the workloads they manage, and potentially cause problems that will not be supported by IBM.
+- The gatekeeper mutation function is currently in alpha and subject to change. 
 - The examples I used here will affect all pods on the cluster that aren't in a namespace labelled with `admission.gatekeeper.sh/ignore`. It would be better to use more targetted mutation rules, and possibly even to scope the web hook more closely. There are a lot of configuration options for gatekeeper and the mutations which can help here.
 - Anyone who can create `Assign`, and potentially even `AssignMetadata` resources effectively has (or could get) cluster admin privileges by mutating the right resources.
 - The webhook is set to ignore on fail so that resources can still be created if gatekeeper fails, but this does mean that the annotation might not always be applied. To ensure mutations are applied, I'd want to carefully scope the webhook before changing the failure policy to avoid breaking the cluster.
