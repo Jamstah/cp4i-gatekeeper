@@ -17,7 +17,7 @@ I started from the gatekeeper experimental deployment with mutation enabled:
 I added a few things for openshift and because I was testing the approach:
 - Remove the PodSecurityPolicy
 - Remove the seccomp annotations
-- Add the `use` verb for the `nonroot` SCC to the service account used by gatekeeper (could probably change the pod config instead)
+- Remove the user and group from the containers so it can run under the `restricted` SCC
 - Added `--emit-audit-events` to the audit pod for debug
 - Added `--emit-admission-events`, `--log-mutations=true` to the controller pod for debug
 - Dropped the replicas to 1 so I can just watch one pod log for debug
