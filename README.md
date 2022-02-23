@@ -11,6 +11,18 @@ Some quick warnings:
 - Anyone who can create `Assign`, and potentially even `AssignMetadata` resources effectively has (or could get) cluster admin privileges by mutating the right resources.
 - The webhook is set to ignore on fail so that resources can still be created if gatekeeper fails, but this does mean that the annotation might not always be applied. To ensure mutations are applied, I'd want to carefully scope the webhook before changing the failure policy to avoid breaking the cluster.
 
+## Applying this to your cluster
+
+First apply https://github.com/Jamstah/cp4i-gatekeeper/raw/main/gatekeeper-with-mutations-on-openshift.yaml, which will install gatekeeper with mutations.
+
+Next apply some configuations for gatekeeper to mutate pods. I tried:
+- An annotation and a sidecar using examples from [this blog post](https://cloud.redhat.com/blog/gatekeeper-mutations).
+- An [init container](https://github.com/Jamstah/cp4i-gatekeeper/raw/main/assign-initcontainer.yaml) for every pod.
+
+For full documentation on gatekeeper mutations, see the [gatekeeper documentation](https://open-policy-agent.github.io/gatekeeper/website/docs/mutation/).
+
+## My investigation
+
 I started from the gatekeeper experimental deployment with mutation enabled:
 - https://github.com/open-policy-agent/gatekeeper/blob/master/deploy/experimental/gatekeeper-mutation.yaml
 
@@ -24,7 +36,7 @@ I added a few things for openshift and because I was testing the approach:
 
 That gave me https://github.com/Jamstah/cp4i-gatekeeper/raw/main/gatekeeper-with-mutations-on-openshift.yaml, which can just apply to an OpenShift cluster (I was using OCP 4.8) to install gatekeeper with mutations.
 
-From there, I tested with a few configurations; adding an annotation and a sidecar using examples from [this blog post]](https://cloud.redhat.com/blog/gatekeeper-mutations) and adding an [init container](https://github.com/Jamstah/cp4i-gatekeeper/raw/main/assign-initcontainer.yaml). Apply that to the cluster and every pod will have a new init container.
+From there, I tested with a few configurations; adding an annotation and a sidecar using examples from [this blog post](https://cloud.redhat.com/blog/gatekeeper-mutations) and adding an [init container](https://github.com/Jamstah/cp4i-gatekeeper/raw/main/assign-initcontainer.yaml). Apply that to the cluster and every pod will have a new init container.
 
 For my tests, I added the annotation, sidecar and init container to an MQ Queue Manager pod and an App Connect Toolkit pod, and they were successfully mutated without side effects in the operators.
 
